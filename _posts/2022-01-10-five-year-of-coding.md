@@ -1,6 +1,6 @@
-# WIP Work In Progess. I will edit this frequently
-# 5 years of professional coding (in germany)
+# [WIP] 5 years of professional coding (in germany)
 
+# Work In Progess. I will edit this frequently
 
 # 2016 - 1st oct 2016 - Before SE
 
