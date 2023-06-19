@@ -1,0 +1,91 @@
+# Wirting things down because maybe someone else will find it useful
+
+# The problem
+
+So I created an application with ionic, react, typescript, nestjs and keycloak.
+
+I never used keycloack before but used a little ionic and react.
+
+tl;dr
+I had to create 2 clients in the keycloak realm
+One for the UI to redirect to the login page
+And another one for the backend which is protected by an authentication secret.
+
+Before I came to that conclusion I only had one client in keycloak.
+That resolved to the problem that my app was able to redirect, I was able to login but afterwards the backend blocked the cookie of the client telling the cookie is not valid.
+Then i also tried to add the client authentication to that one client which only resolved to the problem that we would have to somehow get the client secret into the web application frontend which
+is kind of stupid because the key would than be accisble to everyone
+
+Another Problem was the usage of a react library which claimed to have wrapped the logic of the js client of keycloak. But that library only caused endless reloads of the application. 
+So I removed that part and searched for a boilerplate code which can be used for the authentication 
+
+here it is
+
+```js
+
+import Keycloak from "keycloak-js";
+
+const _kc = new Keycloak({
+	url: "http://localhost:7001/auth",
+	realm: "realm",
+	clientId: "clientId",
+	
+});
+
+/**
+ * Initializes Keycloak instance and calls the provided callback function if successfully authenticated.
+ *
+ * @param onAuthenticatedCallback
+ */
+const initKeycloak = (onAuthenticatedCallback: () => void, onUnAuthenticatedCallback?: (e: Error) => void) => {
+	_kc.init({
+		redirectUri: "http://localhost:7001",
+		onLoad: "login-required",
+		pkceMethod: "S256",
+	})
+		.then((authenticated) => {
+			if (!authenticated) {
+				console.log("user is not authenticated..!");
+			}
+			onAuthenticatedCallback();
+		})
+		.catch((e) => {
+			if (onUnAuthenticatedCallback) {
+				onUnAuthenticatedCallback(e);
+			}
+			console.error(e);
+		});
+};
+
+const doLogin = _kc.login;
+
+const doLogout = _kc.logout;
+
+const getToken = () => _kc.token;
+
+const isLoggedIn = () => !!_kc.token;
+
+const updateToken = () => {
+	return _kc.updateToken(5).catch(doLogin);
+};
+
+const getUsername = () => _kc.tokenParsed?.preferred_username;
+
+const hasRole = (roles) => roles.some((role) => _kc.hasRealmRole(role));
+
+export const UserService = {
+	initKeycloak,
+	doLogin,
+	doLogout,
+	isLoggedIn,
+	getToken,
+	updateToken,
+	getUsername,
+	hasRole,
+};
+
+```
+
+And that solved that issue.
+
+Quite simple solutions but took me roughly around 3 days of fiddling around, searching, trial and error.
