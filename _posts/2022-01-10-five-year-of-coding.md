@@ -73,4 +73,16 @@ third project with 2 months adventure to help out other project
 
 books
 - indistractable
-- teaching agile fixed price
+
+teaching about the agile fixed price in our company, and how to work with it
+
+# seventh year 1.st october 2022 - 1.st october 2023
+
+helping out in another project. For a longer timeframe. About 3-6 months. Building up knowledge about GIVEN WHEN THEN structure.
+
+books
+- thanks for the feedback
+- Seven and a half lesson about the brain
+- Fundamentals of Software Arhcitecture
+
+- Reading the Clean Coder books again together with colleagues of the company to teach about software development.
